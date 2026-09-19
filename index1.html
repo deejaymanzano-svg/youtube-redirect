@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Abrir en YouTube</title>
+<style>
+:root{
+  --bg: #0f0f0f;
+  --card-bg: #1a1a1a;
+  --text: #ffffff;
+  --muted: #a0a0a0;
+  --accent: #ff0000;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --text: #111111;
+    --muted: #555555;
+  }
+}
+:root[data-theme="light"]{
+  --bg: #f5f5f5;
+  --card-bg: #ffffff;
+  --text: #111111;
+  --muted: #555555;
+}
+html,body{
+  height:100%;
+  margin:0;
+}
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.card{
+  background: var(--card-bg);
+  border-radius:20px;
+  padding:32px 24px;
+  max-width:360px;
+  width:100%;
+  text-align:center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+h1{font-size:1.2rem;margin:0 0 8px;}
+p{color:var(--muted);font-size:0.9rem;margin:0 0 24px;line-height:1.4;}
+.btn{
+  display:inline-block;
+  background: var(--accent);
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+  padding:14px 28px;
+  border-radius:999px;
+  font-size:1rem;
+  border:none;
+  cursor:pointer;
+  width:100%;
+}
+.spinner{
+  width:20px;height:20px;
+  border:3px solid rgba(255,255,255,0.2);
+  border-top-color: var(--accent);
+  border-radius:50%;
+  margin:0 auto 16px;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="spinner"></div>
+  <h1>Abriendo YouTube…</h1>
+  <p>Si no se abre automáticamente, pulsa el botón.</p>
+  <button class="btn" id="openBtn">Abrir en la app de YouTube</button>
+</div>
+<script>
+(function(){
+  var YT_WEB = "https://youtube.com/@maikmtmusic?si=LxoST-yMLViYnWZY";
+  var YT_APP_INTENT = "intent://youtube.com/@maikmtmusic?si=LxoST-yMLViYnWZY#Intent;package=com.google.android.youtube;scheme=https;S.browser_fallback_url=" + encodeURIComponent(YT_WEB) + ";end";
+  var YT_APP_IOS = "youtube://youtube.com/@maikmtmusic?si=LxoST-yMLViYnWZY";
+
+  var ua = navigator.userAgent || "";
+  var isAndroid = /Android/i.test(ua);
+  var isiOS = /iPhone|iPad|iPod/i.test(ua);
+
+  function goWeb(){ window.location.href = YT_WEB; }
+
+  function attemptOpen(){
+    if(isAndroid){
+      window.location.href = YT_APP_INTENT;
+      setTimeout(goWeb, 1500);
+    } else if(isiOS){
+      window.location.href = YT_APP_IOS;
+      setTimeout(goWeb, 1200);
+    } else {
+      goWeb();
+    }
+  }
+
+  document.getElementById('openBtn').addEventListener('click', attemptOpen);
+  setTimeout(attemptOpen, 400);
+})();
+</script>
+</body>
+</html>
